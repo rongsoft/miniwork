@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>平台页面</title>
+<!-- 拆出来的那个窗口。
+     形态照微信的独立文章窗口做：没有系统标题栏，顶上是自己画的一条
+     46px 工具栏（返回、平台头像、标题、域名、刷新/收回/关掉），下面整块给网页。
+     它不带导航，也不带任何自己的业务动作——用户在这个窗口里只做一件事：
+     把这一页操作完。 -->
+<link rel="icon" href="data:,">
+<link rel="stylesheet" href="./live.css">
+</head>
+<body class="livepage">
+
+<div class="lw">
+  <!-- --wails-draggable 由 Wails 运行时读取：整条是拖动区，
+       按钮自己标 no-drag，否则按住按钮拖会变成拖窗口。 -->
+  <header class="lw-bar">
+    <button class="lw-ico" id="lwBack" title="回到上一页">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M15 19l-7-7 7-7"></path></svg>
+    </button>
+
+    <!-- 平台头像：用平台自己的颜色，和主窗口里那几颗药丸是同一套色，
+         用户在任务栏一瞄就知道这是哪个平台，不用去读标题。 -->
+    <span class="lw-fav" id="lwFav">平</span>
+
+    <div class="lw-title">
+      <span class="lw-name" id="lwName">平台</span>
+      <span class="lw-meta">
+        <span class="lw-auth" id="lwAuth" hidden>还没登录</span>
+        <span class="lw-sep" id="lwSep" hidden>·</span>
+        <span class="lw-url" id="lwUrl"></span>
+      </span>
+    </div>
+
+    <button class="lw-ico" id="lwReload" title="重新加载这一页">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M20 11a8 8 0 1 0-2.3 6.3"></path><path d="M20 4.5V10h-5.5"></path></svg>
+    </button>
+    <button class="lw-ico" id="lwDock" title="收回主窗口的右栏">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11"></path><path d="M7.5 10.5L12 15l4.5-4.5"></path><path d="M4.5 19.5h15"></path></svg>
+    </button>
+    <button class="lw-ico lw-quit" id="lwQuit" title="关掉这个平台页面">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="M17 7L7 17M7 7l10 10"></path></svg>
+    </button>
+  </header>
+
+  <!-- 发布脚本跑起来时，进度必须出现在这个窗口里：
+       用户在盯的是这一屏，主窗口那条他看不见。 -->
+  <div class="lw-status" id="lwStatus" hidden>
+    <span class="lw-status-dot"></span>
+    <span class="lw-status-text" id="lwStatusText"></span>
+  </div>
+
+  <div class="lw-stage" id="lwStage">
+    <img id="lwShot" alt="" draggable="false" />
+    <div class="lw-hint" id="lwHint">正在接上这一页…</div>
+  </div>
+</div>
+
+<input class="lw-ime" id="lwIme" type="text" autocomplete="off" spellcheck="false" />
+
+<script type="module" src="./live.js"></script>
+</body>
+</html>

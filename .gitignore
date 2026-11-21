@@ -1,0 +1,51 @@
+# ===== 明文密码本 —— 绝对不能进公开仓库 =====
+账号.md
+
+# ===== 第三方浏览器二进制（813MB，含专有 Widevine 组件）=====
+# 仓库不分发浏览器；README 说明如何自行准备
+app/browser/
+
+# ===== 本地数据 / 凭证 =====
+*.db
+*.db.bak-*
+*.db-wal
+*.db-shm
+*.sqlite
+*.sqlite3
+*.pem
+*.key
+id_ed25519
+id_ed25519.pub
+*.keystore
+*.jks
+
+# ===== 运行时生成的本地配置（含用户 token / API Key）=====
+# 仓库内只保留模板，真实配置放本地
+server/config.local.json
+
+# ===== 运行时生成数据 =====
+app/covers/
+
+# ===== 第三方安装器（构建时由 wails 自动下载，不分发）=====
+app/build/windows/nsis/MicrosoftEdgeWebview2Setup.exe
+
+# ===== 设计稿（含疑似人名，非源码/exe 范围）=====
+参考图片/
+
+# ===== 临时截图 / 测试产物 =====
+_gui_*.png
+_gui_*.bmp
+_run_check.png
+*.log
+
+# ===== 系统 / 编辑器 =====
+.DS_Store
+Thumbs.db
+desktop.ini
+.idea/
+.vscode/
+*.swp
+*~
+
+# ===== Go 构建缓存 =====
+/vendor/

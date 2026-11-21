@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+  Miniwork 图标的矢量层，供 Icon Composer 生成 Assets.car（macOS 26 起优先读它）。
+
+  这里的坐标不是 png 那套：Icon Composer 把 svg 的用户单位按 0.8 倍映射成像素，
+  跟 viewBox 大小无关（实测：568 单位 → 455px）。所以要让 Dock 里的图形和 icns
+  一样大，坐标得按 1.25 倍反推放大、再以画布中心 512 为心展开。
+  改图标时改 cmd/mkicon，然后按同一比例把这里的数重算一遍。
+-->
+<svg width="100%" height="100%" viewBox="0 0 1024 1024" version="1.1"
+     xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+
+  <!-- 第一行 -->
+  <circle cx="213.3" cy="295.8" r="56.6" fill="#F6F1E5"/>
+  <rect x="313.3" y="244.3" width="554.1" height="103" rx="51.5" fill="#F6F1E5"/>
+
+  <!-- 第二行 -->
+  <circle cx="213.3" cy="512" r="56.6" fill="#F6F1E5"/>
+  <rect x="313.3" y="460.5" width="554.1" height="103" rx="51.5" fill="#F6F1E5"/>
+
+  <!-- 第三行：短一截，用赭石 -->
+  <circle cx="213.3" cy="728.3" r="56.6" fill="#E08A4C"/>
+  <rect x="313.3" y="676.8" width="451.1" height="103" rx="51.5" fill="#E08A4C"/>
+</svg>

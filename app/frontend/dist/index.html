@@ -1,0 +1,1161 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Miniwork</title>
+<!-- 桌面端不显示标签页图标，但 WebView 仍会请求 /favicon.ico；
+     留空内联一个，省得每次启动日志里多一条 404。 -->
+<link rel="icon" href="data:,">
+<link rel="stylesheet" href="./style.css">
+</head>
+<body>
+
+<div class="dragbar" style="--wails-draggable: drag"></div>
+
+<div class="app">
+
+  <aside class="sidebar">
+    <button class="brand" id="brandBtn" title="我的账号">
+      <span class="brand-avatar" id="sideAvatar">创</span>
+      <span class="brand-text">
+        <b id="sideName">Miniwork</b>
+        <span class="brand-sub">创作者工作台</span>
+      </span>
+    </button>
+
+    <div class="nav-scroll">
+
+    <p class="nav-group">选题管理</p>
+    <nav class="nav">
+      <button class="nav-item on" data-view="today">
+        <svg class="nav-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9"></rect><rect x="14" y="3" width="7" height="5"></rect><rect x="14" y="12" width="7" height="9"></rect><rect x="3" y="16" width="7" height="5"></rect></svg>
+        <span>今日灵感</span>
+        <b class="nav-num" id="navTodo" hidden>0</b>
+      </button>
+      <button class="nav-item" data-view="library">
+        <svg class="nav-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+        <span>选题库</span>
+        <b class="nav-num" id="navLib">0</b>
+      </button>
+      <button class="nav-item" data-view="material">
+        <svg class="nav-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h6"></path><path d="M16 2v6h6"></path><path d="M9 13h6M9 17h4"></path></svg>
+        <span>素材库</span>
+        <b class="nav-num" id="navMat" hidden>0</b>
+      </button>
+    </nav>
+
+    <p class="nav-group">创作工具</p>
+    <nav class="nav">
+      <button class="nav-item" data-view="teardown">
+        <svg class="nav-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.07-2.14-.22-4.05 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.15.43-2.29 1-3a2.5 2.5 0 0 0 2.5 2.5z"></path></svg>
+        <span>爆款拆解</span>
+      </button>
+      <button class="nav-item" data-view="title">
+        <svg class="nav-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.9 4.6 4.6 1.9-4.6 1.9L12 16l-1.9-4.6L5.5 9.5l4.6-1.9L12 3z"></path><path d="M19 15l.8 1.9 1.9.8-1.9.8L19 20.4l-.8-1.9-1.9-.8 1.9-.8L19 15z"></path></svg>
+        <span>标题生成</span>
+      </button>
+      <button class="nav-item" data-view="write">
+        <svg class="nav-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
+        <span>成稿</span>
+      </button>
+    </nav>
+
+    <p class="nav-group">运营复盘</p>
+    <nav class="nav">
+      <button class="nav-item" data-view="agenda">
+        <svg class="nav-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"></path><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg>
+        <span>今日待办</span>
+        <b class="nav-num" id="navTodo2" hidden>0</b>
+      </button>
+      <button class="nav-item" data-view="calendar">
+        <svg class="nav-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"></rect><path d="M16 2v4M8 2v4M3 10h18"></path></svg>
+        <span>发布日历</span>
+      </button>
+      <button class="nav-item" data-view="publish">
+        <svg class="nav-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2 11 13"></path><path d="M22 2 15 22l-4-9-9-4 20-7z"></path></svg>
+        <span>发布台</span>
+        <b class="nav-num" id="navQueue" hidden>0</b>
+      </button>
+      <button class="nav-item" data-view="review">
+        <svg class="nav-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"></path><path d="M7 15l4-5 3 3 5-7"></path></svg>
+        <span>数据分析</span>
+      </button>
+    </nav>
+
+    <p class="nav-group">我的</p>
+    <nav class="nav">
+      <button class="nav-item" data-view="account" id="navAccount">
+        <svg class="nav-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"></circle><path d="M4 21a8 8 0 0 1 16 0"></path></svg>
+        <span>账号</span>
+        <b class="nav-dot" id="navAcctDot" hidden></b>
+      </button>
+      <button class="nav-item" data-view="memory">
+        <svg class="nav-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a3 3 0 0 0-3 3v1a3 3 0 0 0-3 3v1a3 3 0 0 0 0 6v1a3 3 0 0 0 3 3 3 3 0 0 0 6 0 3 3 0 0 0 3-3v-1a3 3 0 0 0 0-6V9a3 3 0 0 0-3-3V5a3 3 0 0 0-3-3z"></path></svg>
+        <span>我的定位</span>
+      </button>
+      <button class="nav-item" data-view="settings">
+        <svg class="nav-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+        <span>设置</span>
+      </button>
+    </nav>
+    </div>
+
+    <div class="side-foot">
+      <div class="side-line" id="srcLine">
+        <span class="dot" id="srcDot"></span>
+        <span id="source">数据源 —</span>
+      </div>
+      <div class="side-line">
+        <span>已记住 <b id="memCount">0</b> 条取舍</span>
+      </div>
+      <div class="model-pill" id="modelPill">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#2563EB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"></rect><rect x="9" y="9" width="6" height="6"></rect><path d="M9 1v3M15 1v3M9 20v3M15 20v3M1 9h3M1 15h3M20 9h3M20 15h3"></path></svg>
+        <span>模型</span>
+        <span class="badge off" id="modelBadge">未接入</span>
+      </div>
+    </div>
+  </aside>
+
+  <main class="main">
+
+    <!-- 今日灵感 -->
+    <section class="view" id="view-today">
+      <header class="page-head">
+        <div>
+          <span class="ai-badge">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l1.9 5.1L19 9l-5.1 1.9L12 16l-1.9-5.1L5 9l5.1-1.9L12 2z"></path><path d="M19 15l.8 2 2 .8-2 .8L19 20.6l-.8-2-2-.8 2-.8L19 15z"></path></svg>
+            每天替你筛一遍
+          </span>
+          <h1>今日灵感，<em>都在这儿了</em></h1>
+          <p class="desc">每条都带匹配分和可写性。收下或丢掉，这个动作会被记住，<br>下次少给你不想要的那类。</p>
+        </div>
+        <div class="head-right">
+          <span class="date-pill">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2"></rect><path d="M16 2v4M8 2v4M3 10h18"></path></svg>
+            <span id="todayDate"></span>
+          </span>
+          <button id="run" class="btn btn-primary">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-2.6-6.4"></path><path d="M21 3v6h-6"></path></svg>
+            <span id="runLabel">刷新灵感</span>
+          </button>
+        </div>
+      </header>
+
+      <div class="progress" id="progress">
+        <div class="progress-bar" id="progressBar"></div>
+        <span class="progress-msg" id="progressMsg"></span>
+      </div>
+
+      <!-- 问候卡：这一屏的第一句话不该是数据，应该是「有人替你干过活了」。
+           高度压到两行半：一句话 + 一排胶囊数字。三个数字原来各占一张
+           三行小卡（数字/名称/解释），一屏还没看到选题就先被自己的数据挡住。 -->
+      <div class="hero-card">
+        <div class="hero-body">
+          <p class="hero-hi" id="heroHi">下午好，创作者 👋</p>
+          <h2 class="hero-line" id="heroLine">
+            今天为你找到了 <b id="heroNew">0</b> 条新灵感
+          </h2>
+          <div class="hero-nums">
+            <span class="hero-chip"><b id="heroNew2">0</b>今日新增</span>
+            <span class="hero-chip"><b id="heroMatch2">0</b>高匹配</span>
+            <span class="hero-chip"><b id="heroPicked">0</b>已转选题</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 示例数据的说明只在降级态出现。
+           它要回答的是用户最想问的那句：「为什么刷来刷去就这几条」。
+           不解释的话，没人会想到是数据源的问题，只会觉得按钮坏了。 -->
+      <p class="demo-note" id="demoNote" hidden>
+        现在用的是示例数据：一共就这么多条，刷几次就抽完了，也接不到真实热榜。
+        <b>接上数据源之后才会每天不一样</b>——这是功能没接完，不是你操作的问题。
+      </p>
+
+      <!-- 灵感怎么来：给用户两条路，而不是一个下拉框。
+           按方向是「我不知道要写什么，你给我看看」，
+           按关键词是「我知道想写什么，你帮我找素材」。
+           这两种心态完全不同，塞进同一个输入框会两边都不好用。 -->
+      <div class="sec-head"><i></i>灵感怎么来</div>
+      <div class="come-grid">
+        <div class="come-card">
+          <div class="come-top">
+            <span class="come-ico ico-warm">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6"></path><path d="M10 22h4"></path><path d="M12 2a7 7 0 0 0-4 12.7V18h8v-3.3A7 7 0 0 0 12 2z"></path></svg>
+            </span>
+            <h3>按内容方向找灵感</h3>
+            <span class="pill pill-warm">智能推荐</span>
+          </div>
+          <p class="come-desc">结合平台热点、你的兴趣与账号定位，推荐写得了的选题。</p>
+          <button class="btn btn-primary" id="run2">获取个性化灵感</button>
+        </div>
+
+        <div class="come-card">
+          <div class="come-top">
+            <span class="come-ico ico-blue">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-3.5-3.5"></path></svg>
+            </span>
+            <h3>输入关键词主动挖掘</h3>
+            <span class="pill pill-violet">跨赛道搜索</span>
+          </div>
+          <div class="kw-row">
+            <input id="kwInput" type="text" placeholder="输入关键词（如：裁员 / 汇报 / 副业）" maxlength="40" autocomplete="off">
+            <button class="btn btn-primary" id="kwRun">获取灵感</button>
+          </div>
+          <p class="come-hint" id="kwHint">不限于当前方向，会跨赛道一起找</p>
+        </div>
+      </div>
+
+      <div class="toolbar">
+        <div class="select-wrap">
+          <select id="niche" aria-label="方向"></select>
+        </div>
+        <button class="chip on" data-plat="">全部</button>
+        <button class="chip" data-plat="xiaohongshu">小红书</button>
+        <button class="chip" data-plat="douyin">抖音</button>
+        <span class="toolbar-note" id="meta"></span>
+      </div>
+
+      <div id="list" class="list"></div>
+
+      <div id="empty" class="empty" hidden>
+        <div class="empty-mark">M</div>
+        <p class="empty-title">今天的选题还没出来</p>
+        <p class="empty-sub">按你选的方向抓一遍热点，通常十几秒。</p>
+        <button id="run3" class="btn btn-primary">生成今天的选题</button>
+      </div>
+
+      <div class="logbox" id="logbox" hidden>
+        <div class="log-head">
+          <span class="log-lights"><i></i><i></i><i></i></span>
+          <span>工作台日志</span>
+        </div>
+        <div class="log-body" id="logBody"></div>
+      </div>
+    </section>
+
+    <!-- 今日待办 -->
+    <section class="view" id="view-agenda" hidden>
+      <header class="page-head">
+        <div>
+          <div class="tagline"><span class="pro-badge">今日待办</span></div>
+          <h1>今天该干什么</h1>
+          <p class="desc">逾期 &gt; 今天要发 &gt; 卡住 &gt; 待你决定。这个顺序就是优先级</p>
+        </div>
+        <div class="head-right">
+          <span class="agenda-counts" id="agendaCounts"></span>
+        </div>
+      </header>
+
+      <div class="agenda" id="agenda">
+        <div class="agenda-list" id="agendaList"></div>
+      </div>
+    </section>
+
+    <!-- 选题库 -->
+    <section class="view" id="view-library" hidden>
+      <header class="page-head">
+        <div>
+          <div class="tagline"><span class="pro-badge">选题库</span></div>
+          <h1>你已经留下的</h1>
+          <p class="desc">这些同时也是它学习你口味的依据</p>
+        </div>
+      </header>
+      <div id="libList" class="list"></div>
+      <div id="libEmpty" class="empty" hidden>
+        <div class="empty-mark">M</div>
+        <p class="empty-title">还没收下任何选题</p>
+        <p class="empty-sub">回到今日灵感，把值得写的留下。</p>
+      </div>
+    </section>
+
+    <!-- 爆款拆解 -->
+    <!-- 素材库 -->
+    <section class="view" id="view-material" hidden>
+      <header class="page-head">
+        <div>
+          <div class="tagline"><span class="pro-badge">素材库</span></div>
+          <h1>别人写得好的，存着学</h1>
+          <p class="desc">粘链接和正文进来，AI 提炼值得学的点；写稿时随时回来翻</p>
+        </div>
+        <div class="head-right">
+          <button class="btn btn-primary" id="matAdd">+ 添加素材</button>
+        </div>
+      </header>
+
+      <div class="mat-stats" id="matStats"></div>
+      <div class="seg" id="matSeg"></div>
+      <div class="mat-list" id="matList"></div>
+    </section>
+
+    <section class="view" id="view-teardown" hidden>
+      <header class="page-head">
+        <div>
+          <div class="tagline"><span class="pro-badge">爆款拆解</span></div>
+          <h1>它为什么火</h1>
+          <p class="desc">贴一条别人的爆款，六行拆清它做对了什么——然后照着写自己的</p>
+        </div>
+      </header>
+
+      <div class="tool-wrap">
+        <div class="tool-input">
+          <div class="tool-field">
+            <label for="tdRaw">粘贴要拆的笔记 <i>链接、标题、整段分享文案都能贴</i></label>
+            <textarea id="tdRaw" rows="6" placeholder="在手机里点「分享 → 复制」，把复制到的那一整段话贴进来（标题、正文、链接会自己分开）。只有一条链接不行——正文要登录才给。"></textarea>
+          </div>
+          <div class="tool-actions">
+            <span class="tool-hint" id="tdHint">拆解不消耗选题配额，直接调模型</span>
+            <button class="btn btn-primary" id="tdRun">开始拆解</button>
+          </div>
+        </div>
+
+        <div id="tdResult" class="tool-result" hidden></div>
+
+        <div id="tdEmpty" class="empty">
+          <div class="empty-mark">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.07-2.14-.22-4.05 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.15.43-2.29 1-3a2.5 2.5 0 0 0 2.5 2.5z"></path></svg>
+          </div>
+          <p class="empty-title">还没有拆过东西</p>
+          <p class="empty-sub">下面这张是拆完的样子，贴一条进来就有你自己的。</p>
+          <!-- 空状态给一张示例卡而不是一段说明文字：
+               「六行短字段」这句话用户读不懂，看一眼卡片就懂了。
+               灰化 + 角标是必须的，否则他会以为这是他自己拆过的记录。 -->
+          <div class="td-sample" id="tdSample"></div>
+        </div>
+
+        <section class="td-hist" id="tdHist" hidden>
+          <div class="td-hist-head">
+            <h3>拆过的</h3>
+            <span>点一条重看，不用再花一次模型</span>
+          </div>
+          <div class="td-hist-list" id="tdHistList"></div>
+        </section>
+      </div>
+    </section>
+
+    <!-- 标题生成 -->
+    <section class="view" id="view-title" hidden>
+      <header class="page-head">
+        <div>
+          <div class="tagline"><span class="pro-badge">标题生成</span></div>
+          <h1>换个说法</h1>
+          <p class="desc">同一个选题，几种不同的钩子。挑一个顺手的改，别直接抄</p>
+        </div>
+      </header>
+
+      <div class="tool-wrap">
+        <div class="tool-input">
+          <div class="tool-field">
+            <label for="tgSeed">写清楚你要讲什么</label>
+            <textarea id="tgSeed" rows="3" placeholder="例：35 岁被优化，我用 40 天找到更好的工作，关键是先想明白三件事"></textarea>
+          </div>
+          <div class="tool-field">
+            <label>想要的钩子 <i>可多选</i></label>
+            <div class="hook-picks" id="tgHooks">
+              <button class="hook-pick on" data-hook="悬念">悬念</button>
+              <button class="hook-pick on" data-hook="数字">数字</button>
+              <button class="hook-pick on" data-hook="冲突">冲突</button>
+              <button class="hook-pick on" data-hook="反问">反问</button>
+              <button class="hook-pick on" data-hook="身份代入">身份代入</button>
+            </div>
+          </div>
+          <div class="tool-actions">
+            <span class="tool-hint" id="tgHint">8 个候选，按钩子分组</span>
+            <button class="btn btn-primary" id="tgRun">生成标题</button>
+          </div>
+        </div>
+
+        <div id="tgResult" class="tool-result" hidden></div>
+
+        <div id="tgEmpty" class="empty">
+          <div class="empty-mark">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.9 4.6 4.6 1.9-4.6 1.9L12 16l-1.9-4.6L5.5 9.5l4.6-1.9L12 3z"></path><path d="M19 15l.8 1.9 1.9.8-1.9.8L19 20.4l-.8-1.9-1.9-.8 1.9-.8L19 15z"></path></svg>
+          </div>
+          <p class="empty-title">标题是唯一一次免费的机会</p>
+          <p class="empty-sub">读者只根据它决定点不点进来。写不出来的时候，让它先来八个。</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 成稿 -->
+    <section class="view" id="view-write" hidden>
+      <header class="page-head">
+        <div>
+          <div class="tagline"><span class="pro-badge">成稿</span></div>
+          <h1>写成能发的样子</h1>
+          <p class="desc">选一条选题、挑个平台，它交第一稿。改成你自己的语气，然后直接发出去</p>
+        </div>
+      </header>
+
+      <div class="write-bar">
+        <div class="wr-row">
+          <span class="wr-label">写哪条</span>
+          <div class="wr-topics" id="wrTopics"></div>
+        </div>
+        <div class="wr-row">
+          <span class="wr-label">发到</span>
+          <div class="plat-picks" id="wrPlats"></div>
+          <!-- seg 这个类是图文/口播那个分段控件的样式来源。
+               之前只写了 wr-seg（只管外边距），按钮就是浏览器默认样式：
+               方框套方框、字被挤成两行，看着像没做完。 -->
+          <div class="seg wr-seg" id="wrFormat">
+            <button class="on" data-format="long">图文</button>
+            <button data-format="short">口播稿</button>
+          </div>
+          <button class="link-btn" id="wrMatToggle">+ 我的素材</button>
+          <span class="tool-hint wr-hint" id="wrHint">先挑一条选题</span>
+          <button class="btn btn-primary" id="wrRun">生成成稿</button>
+        </div>
+        <div class="wr-mat" id="wrMatBox" hidden>
+          <textarea id="wrMaterial" rows="3" placeholder="你自己的经历、数字、当时的原话。填了这一栏，稿子才像你写的；不填它只能写读者都经历过的通用场景。"></textarea>
+          <p class="wr-skel" id="wrSkel" hidden></p>
+        </div>
+      </div>
+
+      <div class="empty" id="wrEmpty">
+        <div class="empty-mark">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
+        </div>
+        <p class="empty-title" id="wrEmptyTitle">还没有可以写的选题</p>
+        <p class="empty-sub" id="wrEmptySub">先去「今日灵感」收下一条。收下之后它就在这儿等你。</p>
+      </div>
+
+      <div class="write-ed" id="wrEditor" hidden>
+        <div class="ed-head">
+          <input id="wrTitle" class="ed-title" maxlength="300" placeholder="标题" autocomplete="off">
+          <span class="count" id="wrTitleCount">0/20</span>
+        </div>
+        <div class="ed-issues" id="wrIssues"></div>
+
+        <!-- 正文不再是 textarea。
+             小标题、列表、引用在小红书/公众号的正文里都只是「空行 + 符号」，
+             纯文本框等于让用户自己记符号、自己数空行；写成什么样、发出去是什么样，
+             中间隔着一层脑内转换。这里改成所见即所得，但存下去的仍是纯文本
+             （平台输入框只吃纯文本），所以 DOM 和纯文本必须能一一对上。 -->
+        <div class="ed-tools" id="edTools">
+          <button class="ed-tool" data-ed="undo" title="撤销（Ctrl+Z）" aria-label="撤销">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 14L4 9l5-5"></path><path d="M4 9h10a6 6 0 0 1 0 12h-3"></path></svg>
+          </button>
+          <button class="ed-tool" data-ed="redo" title="重做（Ctrl+Y）" aria-label="重做">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M15 14l5-5-5-5"></path><path d="M20 9H10a6 6 0 0 0 0 12h3"></path></svg>
+          </button>
+          <span class="ed-sep"></span>
+          <button class="ed-tool ed-glyph" data-ed="h3" title="小标题（行首敲 # 加空格也行）">H</button>
+          <button class="ed-tool ed-glyph" data-ed="p" title="正文段落">¶</button>
+          <span class="ed-sep"></span>
+          <button class="ed-tool" data-ed="ul" title="无序列表（行首敲 - 加空格）">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><circle cx="5" cy="7" r="1.2" fill="currentColor" stroke="none"></circle><circle cx="5" cy="12" r="1.2" fill="currentColor" stroke="none"></circle><circle cx="5" cy="17" r="1.2" fill="currentColor" stroke="none"></circle><path d="M9 7h10M9 12h10M9 17h10"></path></svg>
+          </button>
+          <button class="ed-tool ed-glyph" data-ed="ol" title="有序列表（行首敲 1. 加空格）">1.</button>
+          <button class="ed-tool ed-glyph ed-quote" data-ed="quote" title="引用（行首敲 &gt; 加空格）">“”</button>
+          <button class="ed-tool" data-ed="hr" title="分割线（单独一行敲 --- 回车）">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M4 12h16"></path><path d="M7 7h10" opacity=".35"></path><path d="M7 17h10" opacity=".35"></path></svg>
+          </button>
+          <span class="ed-sep"></span>
+          <button class="ed-tool" data-ed="clear" title="清除格式">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 15.5l6.5-6.5 5 5-6.5 6.5H7z"></path><path d="M10.5 9L15 4.5l5 5-4.5 4.5"></path><path d="M13 20h8"></path></svg>
+          </button>
+          <span class="ed-grow"></span>
+          <button class="ed-tool" data-ed="focus" title="专注模式（Esc 退出）">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9.5V4.5h5"></path><path d="M20 9.5V4.5h-5"></path><path d="M4 14.5v5h5"></path><path d="M20 14.5v5h-5"></path></svg>
+          </button>
+        </div>
+        <div class="ed-body" id="wrBody" contenteditable="true" role="textbox" aria-multiline="true" spellcheck="false" data-placeholder="正文"></div>
+        <div class="ed-foot">
+          <span class="count" id="wrBodyCount">0/1000</span>
+          <span class="ed-note" id="wrNote"></span>
+        </div>
+        <div class="ed-tags" id="wrTags"></div>
+        <div class="ed-shots" id="wrShots" hidden></div>
+        <div class="ed-bar">
+          <span class="ed-where" id="wrWhere"></span>
+          <!-- 主按钮只有一个：发到平台。
+               上一版这里主按钮是「复制全部」，等于告诉用户「去别处自己弄」——
+               写好一稿最自然的动作是发出去，复制只是它做不到时的退路。
+               所以复制留在这儿，但降成次要按钮。 -->
+          <div class="ed-btns">
+            <button class="btn btn-ghost btn-mini" id="wrDel">删除</button>
+            <button class="btn btn-ghost btn-mini" id="wrSave">保存</button>
+            <button class="btn btn-ghost" id="wrCopyTitle">复制标题</button>
+            <button class="btn btn-ghost" id="wrCopy">复制全部</button>
+            <button class="btn btn-ghost btn-mini" id="wrPublish">只记一笔</button>
+            <button class="btn btn-primary" id="wrSend">发到平台 →</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 日历 -->
+    <section class="view" id="view-calendar" hidden>
+      <header class="page-head">
+        <div>
+          <div class="tagline"><span class="pro-badge">日历</span></div>
+          <h1>排到哪天发</h1>
+          <p class="desc">排上日子就是承诺。过了日子还没发的会标红</p>
+        </div>
+        <div class="head-right">
+          <button class="btn btn-ghost cal-arrow" id="calPrev" aria-label="上个月">‹</button>
+          <span class="cal-month" id="calMonth">—</span>
+          <button class="btn btn-ghost cal-arrow" id="calNext" aria-label="下个月">›</button>
+        </div>
+      </header>
+
+      <div class="cal-summary" id="calSummary"></div>
+
+      <div class="cal-wrap">
+        <div class="cal">
+          <div class="cal-week">
+            <span>日</span><span>一</span><span>二</span><span>三</span><span>四</span><span>五</span><span>六</span>
+          </div>
+          <div class="cal-grid" id="calGrid"></div>
+        </div>
+        <aside class="cal-side">
+          <div class="cal-side-head">
+            <span>收了还没排期</span>
+            <b id="pendCount">0</b>
+          </div>
+          <div class="pend-list" id="pendList"></div>
+        </aside>
+      </div>
+
+      <div class="cal-day" id="calDay" hidden>
+        <div class="cal-day-head">
+          <span id="calDayTitle"></span>
+          <button class="btn btn-ghost btn-mini" id="calDayClose">收起</button>
+        </div>
+        <div class="list" id="calDayList"></div>
+      </div>
+    </section>
+
+    <!-- 复盘 -->
+    <section class="view" id="view-review" hidden>
+      <header class="page-head">
+        <div>
+          <div class="tagline"><span class="pro-badge">复盘</span></div>
+          <h1>你的判断准不准</h1>
+          <p class="desc">上半部分只统计你自己的操作，不用填任何东西；下半部分的笔记数据可以从平台直接拉，登录过就能一键同步</p>
+        </div>
+        <div class="head-right">
+          <div class="seg" id="revSeg"></div>
+          <!-- 同步按钮放页头，不放区块内部。
+               放在下面时用户得先滚过整块「你的判断」才看见它，
+               而这个按钮才是这一页唯一能自动完成的事。 -->
+          <div class="note-sync head-sync" id="noteSync" hidden></div>
+        </div>
+      </header>
+      <div id="revBody"></div>
+
+      <!-- 笔记复盘。和上面那块刻意分开：上面复盘的是「你的判断」，
+           数据全是本地点击、不用填；这里复盘的是「发出去的效果」，
+           数据在平台那边——能自动拉的就自动拉，拉不到的才让人填。 -->
+      <div class="note-sec">
+        <div class="sec-head">
+          <h2>笔记复盘</h2>
+          <span class="sec-note" id="noteNote"></span>
+        </div>
+        <p class="note-desc">
+          数据可以从平台一键拉下来；拉不到的再手填。填完打个星，写一句为什么——攒够几条就能看出你的眼光和真实数据对不对得上
+        </p>
+        <div class="note-stats" id="noteStats"></div>
+        <p class="note-insight" id="noteInsight" hidden></p>
+        <div class="note-tabs" id="noteTabs"></div>
+        <div class="note-list" id="noteList"></div>
+      </div>
+    </section>
+
+    <!-- 发布台 -->
+    <section class="view" id="view-publish" hidden>
+      <header class="page-head">
+        <div>
+          <div class="tagline"><span class="pro-badge">发布台</span></div>
+          <h1>该发什么，发过什么</h1>
+          <p class="desc">上半是排了日子还没发的，下半是已经发出去的账。自动发成功的会自己记上，不用回来补</p>
+        </div>
+      </header>
+
+      <div class="pub-stats" id="pubStats"></div>
+
+      <!-- 发布任务：三段式（类型 → 素材和账号 → 生成清单）的产物。
+           和下面「待发」不是一回事：待发来自排了日期的选题（意向），
+           这里是明确决定要发的稿子和平台（清单）。 -->
+      <div class="pub-sec" id="taskSec">
+        <div class="sec-head">
+          <h2>发布任务</h2>
+          <span class="sec-note" id="taskNote"></span>
+          <button class="link-btn" id="taskClear" hidden>清空</button>
+          <button class="btn btn-primary btn-mini" id="taskNew">新建发布</button>
+        </div>
+        <div class="pub-tasks" id="taskList"></div>
+      </div>
+
+      <!-- 绑定区在页面最底部（它属于「配置」，不属于「今天发什么」），
+           但用户第一次来是找不到的——账号页说「去发布台」，他滚到一半
+           就以为这里没有绑定入口。所以没连上时在顶上挂一条，点一下滚过去。 -->
+      <button class="bind-hint" id="bindHint" hidden>
+        <span id="bindHintText">还有号没连上</span>
+        <span class="bind-hint-go">去连 →</span>
+      </button>
+
+      <div class="pub-sec">
+        <div class="sec-head">
+          <h2>待发</h2>
+          <span class="sec-note" id="pubQueueNote"></span>
+          <!-- 发布台必须能「直接发一篇」。上一版只能从成稿页、或从排期过的
+               待发条目上进发布——账号页说「去发布台」，人过来只看到绑定状态，
+               找不到任何发布按钮，就以为功能坏了。 -->
+          <button class="btn btn-primary btn-mini pub-compose" id="pubCompose">发一篇</button>
+        </div>
+        <div class="pub-queue" id="pubQueue"></div>
+      </div>
+
+      <div class="pub-sec">
+        <div class="sec-head">
+          <h2>台账</h2>
+          <span class="sec-note" id="pubRecNote"></span>
+        </div>
+        <div class="pub-records" id="pubRecords"></div>
+      </div>
+
+      <!-- 平台账号 = 绑定。
+           上一版这一块只显示三个输入框（「只记名字，程序不登录任何平台」），
+           而账号页还在说「去发布台绑定」——用户照着点进来，看到的是一句
+           「程序不登录任何平台」，等于把入口关上了。
+           现在它就是绑定的地方：扫码登录、填 AppID、缺浏览器时给下载入口。 -->
+      <div class="pub-sec" id="bindPanel">
+        <div class="sec-head">
+          <h2>平台账号</h2>
+          <span class="sec-note" id="bindNote">发之前先在这儿连上你自己的号</span>
+          <button class="link-btn" id="bindRecheck">重新检测</button>
+        </div>
+        <div class="acct-binds" id="pubBinds"></div>
+        <p class="bind-browser" id="bindBrowser" hidden></p>
+
+        <div class="bind-wx" id="bindWx" hidden>
+          <p class="bind-wx-title">公众号绑定</p>
+          <!-- 顺序是有讲究的：先说扫码，再说为什么还剩一个要手填。
+               用户上一版看到的第一句是"去后台拿 AppID 和 AppSecret"，
+               直接就被吓退了。 -->
+          <p class="bind-wx-help">
+            右边面板里用微信扫一下码，<b>AppID 会自动填好</b>。
+            AppSecret 微信只显示一次，要你在后台点一下「重置」生成，
+            生成后复制到这里——这是唯一需要你动手的一步。
+          </p>
+          <div class="wx-scan-row">
+            <button class="btn btn-ghost" id="bindWxScan">打开后台扫码</button>
+            <span class="wx-scan-state" id="bindWxState">还没开始</span>
+          </div>
+          <p class="wx-ip" id="bindWxIp" hidden></p>
+          <div class="key-grid">
+            <label class="key-field">
+              <span>AppID</span>
+              <input id="bindWxAppID" type="text" spellcheck="false" autocomplete="off" placeholder="wx 开头的一串" />
+            </label>
+            <label class="key-field">
+              <span>AppSecret</span>
+              <input id="bindWxSecret" type="password" spellcheck="false" autocomplete="new-password" placeholder="不回显，留空表示不改" />
+            </label>
+          </div>
+          <div class="key-actions">
+            <button class="btn btn-primary" id="bindWxSave">保存</button>
+            <button class="btn btn-ghost" id="bindWxTest">测试连接</button>
+            <button class="btn btn-ghost" id="bindWxCancel">收起</button>
+            <span class="key-out" id="bindWxOut"></span>
+          </div>
+        </div>
+
+        <p class="fine">
+          凭证只存本机，不上传。小红书和抖音没有公开接口，是在你自己的浏览器里
+          用你的登录态发，第一次要先登录一次——画面就在这个窗口里，扫码或手机
+          验证码照着点即可。
+        </p>
+      </div>
+
+    </section>
+
+    <!-- 我的定位 -->
+    <!-- 账号。
+         机器码即身份：第一次打开自动建档，没有注册流程、没有验证码。
+         这块要回答两个问题：「我是谁」（名字、手机号、设备码）和
+         「我绑了哪些号」（模型、公众号、小红书、抖音）——都是用户自己的凭证。 -->
+    <section class="view" id="view-account" hidden>
+      <header class="page-head">
+        <div>
+          <div class="tagline"><span class="pro-badge">账号</span></div>
+          <h1>你是谁，绑了哪些号</h1>
+          <p class="desc">这台机器第一次打开就自动建档了，不用注册。名字和手机号只存在本机</p>
+        </div>
+      </header>
+
+      <div class="panel">
+        <div class="acct-id">
+          <div class="acct-avatar" id="acctAvatar">·</div>
+          <div class="acct-info">
+            <div class="acct-name" id="acctShown">还没填名字</div>
+            <div class="acct-meta">
+              <span id="acctCreated">—</span>
+              <span class="acct-sep">·</span>
+              <code id="acctCode">—</code>
+            </div>
+          </div>
+          <button class="btn btn-ghost btn-mini" id="acctCopy">复制设备码</button>
+        </div>
+
+        <div class="key-grid acct-form">
+          <label class="key-field">
+            <span>姓名</span>
+            <input id="acctName" type="text" maxlength="24" autocomplete="off" placeholder="怎么称呼你" />
+          </label>
+          <label class="key-field">
+            <span>手机号</span>
+            <input id="acctPhone" type="text" maxlength="20" autocomplete="off" placeholder="选填，方便售后找到你" />
+          </label>
+        </div>
+        <div class="key-actions">
+          <button class="btn btn-primary" id="acctSave">保存</button>
+          <span class="key-out" id="acctOut"></span>
+        </div>
+        <p class="fine">
+          设备码由本机硬件算出，用来认这台机器。姓名、手机号只写在本机的库里，不上传；
+          换一台机器就是新账号，方便的话现在把名字填上。
+        </p>
+      </div>
+
+      <div class="panel">
+        <div class="panel-title">绑定</div>
+        <p class="panel-desc">这些都是你自己的账号，凭证只存本机。我们不代发、也拿不到你的 Key</p>
+        <div class="acct-binds" id="acctBinds"></div>
+      </div>
+    </section>
+
+    <section class="view" id="view-memory" hidden>
+      <header class="page-head">
+        <div>
+          <div class="tagline"><span class="pro-badge">长期记忆</span></div>
+          <h1>它记住的你</h1>
+          <p class="desc">这几句话决定它怎么替你判断选题。留空就只按方向判断，不会瞎猜你的身份</p>
+        </div>
+      </header>
+      <div class="panel">
+        <label class="field">
+          <span>一句话定位</span>
+          <input id="pfPositioning" placeholder="例：二线城市的 HR，专写职场潜规则" />
+        </label>
+        <label class="field">
+          <span>目标读者</span>
+          <input id="pfAudience" placeholder="例：工作 3–8 年、想跳槽又不敢的白领" />
+        </label>
+        <label class="field">
+          <span>语气风格</span>
+          <input id="pfTone" placeholder="例：克制、不说教、给具体做法" />
+        </label>
+        <label class="field">
+          <span>不碰的话题</span>
+          <input id="pfAvoid" placeholder="例：不碰裁员赔偿的法律细节" />
+        </label>
+        <div class="panel-foot">
+          <span class="panel-note" id="memStats"></span>
+          <button class="btn btn-primary" id="memSave">保存</button>
+        </div>
+      </div>
+
+      <!-- 第三层记忆：不是用户填的，是从他的每一次取舍里学的。
+           放在人设表单下面，是因为要让人一眼分出「哪些是我说的、哪些是它猜的」——
+           混在一起，用户就分不清哪条错了该怪谁，也就没法纠正。 -->
+      <div class="panel learnt-panel">
+        <div class="panel-title">它自己学到的</div>
+        <p class="panel-desc">
+          从你的取舍里自动学来的，不是你填的。不对就点掉，它会停止按那个词加分
+        </p>
+        <div class="learnt-note" id="learntNote"></div>
+        <div class="learnt-chips" id="learntChips"></div>
+      </div>
+    </section>
+
+    <!-- 设置 -->
+    <section class="view" id="view-settings" hidden>
+      <header class="page-head">
+        <div>
+          <div class="tagline"><span class="pro-badge">设置</span></div>
+          <h1>数据与模型</h1>
+          <p class="desc">数据从哪来、模型开没开，都在这儿</p>
+        </div>
+      </header>
+      <!-- 定时刷新：这个产品的核心承诺是「打开就有新东西看」，
+           如果需要用户每天自己点一下，它就只是个取数工具。 -->
+      <div class="panel">
+        <div class="panel-title">每天自动刷新</div>
+        <p class="panel-desc">到点自动抓一批新选题，打开就有。不开也能手动刷新</p>
+        <div class="sched-row">
+          <label class="switch">
+            <input type="checkbox" id="schEnabled" />
+            <span class="switch-track"><span class="switch-knob"></span></span>
+          </label>
+          <span class="sched-state" id="schState">已关闭</span>
+        </div>
+        <div class="sched-row">
+          <span class="sched-name">每天几点</span>
+          <input type="time" id="schTime" class="sched-time" value="08:30" />
+        </div>
+        <div class="row"><span>上次刷新</span><b id="schLast">—</b></div>
+        <div class="row"><span>下次刷新</span><b id="schNext">—</b></div>
+      </div>
+
+      <!-- 后台运行：定时刷新那句话是有前提的——程序得在跑。
+           这块就是把前提补上，所以紧跟在定时刷新后面。
+           两个开关不是并列的：自启会顺手把驻留打开，因为「开机启动 + 一碰窗口就退」
+           是自相矛盾的配置，等于开机时闪了一下。 -->
+      <div class="panel">
+        <div class="panel-title">后台运行</div>
+        <p class="panel-desc">关掉窗口也继续在，到点自己刷新。后台有图标，点一下就回来</p>
+        <div class="sched-row">
+          <label class="switch">
+            <input type="checkbox" id="shResident" />
+            <span class="switch-track"><span class="switch-knob"></span></span>
+          </label>
+          <span class="sched-state" id="shResidentState">关窗后留在后台</span>
+        </div>
+        <div class="sched-row">
+          <label class="switch">
+            <input type="checkbox" id="shAutoStart" />
+            <span class="switch-track"><span class="switch-knob"></span></span>
+          </label>
+          <span class="sched-state" id="shAutoStartState">开机自动启动</span>
+        </div>
+        <p class="fine" id="shAutoStartHint"></p>
+        <div class="row"><span>自启项</span><code id="shAutoStartPath">—</code></div>
+      </div>
+
+      <!-- 填 Key 的地方。
+           放只读的「请编辑配置文件」是不行的：拆解、写稿、素材提炼三处的
+           报错都在指这里，而客户不会去改 json。 -->
+      <div class="panel" id="aiPanel">
+        <div class="panel-title">模型</div>
+        <p class="panel-desc" id="aiKeyState">还没配置。填完就能用拆解、写稿、素材提炼</p>
+        <div class="key-grid">
+          <label class="key-field">
+            <span>接口地址</span>
+            <input id="aiBase" type="text" spellcheck="false" autocomplete="off" placeholder="https://api.deepseek.com/v1" />
+          </label>
+          <label class="key-field">
+            <span>模型名</span>
+            <input id="aiModel" type="text" spellcheck="false" autocomplete="off" placeholder="deepseek-chat" />
+          </label>
+          <label class="key-field key-field-wide">
+            <span>API Key</span>
+            <input id="aiKey" type="password" spellcheck="false" autocomplete="new-password" placeholder="sk-…" />
+          </label>
+        </div>
+        <div class="key-actions">
+          <button class="btn btn-primary" id="aiSave">保存并启用</button>
+          <button class="btn btn-ghost" id="aiTest">测试连接</button>
+          <span class="key-out" id="aiTestOut"></span>
+        </div>
+        <p class="fine">Key 明文存在本机 config.json（<code id="aiKeyPath">—</code>），不上传。截图或录屏时留意这一栏。接了 OpenAI 兼容的服务都能填，改地址和模型名即可。</p>
+      </div>
+
+      <div class="panel">
+        <div class="panel-title">模型分工</div>
+        <p class="panel-desc" id="aiSummary">读不到模型配置</p>
+        <div class="ai-scenes" id="aiScenes"></div>
+        <div class="ai-models" id="aiModels"></div>
+        <p class="fine" id="aiHint"></p>
+        <div class="row"><span>配置文件</span><code id="aiConfigPath">—</code></div>
+      </div>
+
+      <div class="panel">
+        <div class="row"><span>数据源</span><b id="setSource">—</b></div>
+        <div class="row"><span>模型</span><b id="setAI">—</b></div>
+        <div class="row"><span>本地库</span><code id="setDB">—</code></div>
+      </div>
+      <p class="fine">改数据源和模型请编辑配置文件，重启后生效。选题、人设、取舍都存在本地库里，不联网也能打开。</p>
+    </section>
+
+  </main>
+  <!-- 平台页面：并排在右边，和微信那种「左边列表、右边正文」一个结构。
+       它不是盖在界面上的浮层——左边导航和列表照常能点，用户一边看平台
+       一边看自己的选题。网页是真的在渲染（底下是内置的那份 Chromium），
+       画面通过 CDP 推过来，点击和输入再投回去，「自动发布」的能力一步没少。 -->
+  <div class="live-split" id="liveSplit" hidden></div>
+<div class="live" id="liveWin" hidden>
+  <div class="live-bar">
+    <button class="lvb" id="liveBack" title="回到上一页">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M15 19l-7-7 7-7"></path></svg>
+    </button>
+    <span class="live-title" id="liveTitle">小红书</span>
+    <span class="live-auth" id="liveAuth" hidden></span>
+    <span class="live-url" id="liveUrl"></span>
+    <span class="live-gap"></span>
+    <button class="lvb" id="liveReload" title="重新加载这一页">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M20 11a8 8 0 1 0-2.3 6.3"></path><path d="M20 4.5V10h-5.5"></path></svg>
+    </button>
+    <!-- 拆出：和微信打开文章一样，把这一页拿到独立窗口里。
+         分栏时中间那块只剩三百多像素，写稿和发布都憋屈；
+         拆出去之后主窗口整块留给自己的内容，平台页可以挪到另一块屏。 -->
+    <button class="lvb" id="livePop" title="拆成独立窗口">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6"></path><path d="M20 4l-8 8"></path><path d="M18 14v5a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h5"></path></svg>
+    </button>
+    <button class="lvb lvb-close" id="liveClose" title="关掉这个平台页面">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="M17 7L7 17M7 7l10 10"></path></svg>
+    </button>
+  </div>
+  <!-- 发布进行中时，这一条就是进度。放在画面上面而不是盖在画面上：
+       网页本身在动，进度只需要占一行，不该挡住用户正在看的东西。 -->
+  <div class="live-status" id="liveStatus" hidden>
+    <span class="live-status-dot" id="liveDot"></span>
+    <span class="live-status-text" id="liveStatusText"></span>
+    <button class="btn btn-primary btn-mini" id="liveMark" hidden>已发了，记一笔</button>
+  </div>
+  <div class="live-stage" id="liveStage">
+    <img id="liveShot" alt="" draggable="false" />
+    <div class="live-hint" id="liveHint">正在接上这个平台的页面…</div>
+  </div>
+  <!-- 键盘要走隐藏输入框：画面上收不到真实键盘事件。
+       中文靠 composition 事件取最终文字，中途的拼音字母不发。 -->
+  <input class="live-ime" id="liveIme" type="text" autocomplete="off" spellcheck="false" />
+</div>
+
+<!-- 首启动三问 -->
+<div class="onboard" id="onboard" hidden>
+  <div class="onboard-card">
+    <div class="ob-dots" id="obDots"></div>
+    <div class="ob-body" id="obBody"></div>
+    <div class="ob-foot">
+      <button class="ob-skip" id="obSkip">跳过，先看看</button>
+      <button class="btn btn-primary" id="obNext">下一步</button>
+    </div>
+  </div>
+</div>
+
+<!-- 排期弹层：一个日期 + 几个快捷项。
+     不用拖拽：拖拽在触控板上难精确，而这个动作一天只做一两次，
+     点两下比拖一次快。 -->
+<div class="pop" id="pubPop" hidden>
+  <div class="pop-card pop-card-wide">
+    <p class="pop-title">记下这次发布</p>
+    <p class="pop-topic" id="pubPopTopic"></p>
+    <div class="pub-form">
+      <div class="pub-form-row">
+        <label>发到</label>
+        <div class="plat-picks plat-picks-sm" id="pubPopPlat"></div>
+      </div>
+      <div class="pub-form-row">
+        <label for="pubPopAccount">账号</label>
+        <input id="pubPopAccount" type="text" placeholder="发在哪个号上，选填" autocomplete="off">
+      </div>
+      <div class="pub-form-row">
+        <label for="pubPopUrl">链接</label>
+        <input id="pubPopUrl" type="text" placeholder="发布后的链接，选填" autocomplete="off">
+      </div>
+      <div class="pub-form-row">
+        <label for="pubPopDate">日期</label>
+        <input id="pubPopDate" type="date">
+      </div>
+    </div>
+    <div class="pop-foot">
+      <button class="btn btn-ghost" id="pubPopCancel">取消</button>
+      <button class="btn btn-primary" id="pubPopOk">确认已发</button>
+    </div>
+  </div>
+</div>
+
+<div class="pop" id="taskPop" hidden>
+  <div class="pop-card tz-card">
+    <div class="tz-top">
+      <span class="tz-progress" id="tzProgress">1 / 3</span>
+      <b class="tz-title" id="tzTitle">选发布类型</b>
+      <button class="tz-x" id="tzClose" title="关掉">×</button>
+    </div>
+    <div class="tz-body" id="tzBody">
+      <!-- 第一步：类型。先定类型再挑稿子，是因为形态决定了哪些稿能用：
+           口播稿是台词，发成图文没人看；图文发成口播念不完。 -->
+      <div class="tz-pane" data-pane="1">
+        <button class="tz-type" data-fmt="long">
+          <span class="tz-type-mark">图文</span>
+          <span class="tz-type-name">图文长文</span>
+          <span class="tz-type-desc">小红书笔记、公众号图文。一篇 800–1000 字，靠段落和列表读</span>
+        </button>
+        <button class="tz-type" data-fmt="short">
+          <span class="tz-type-mark">口播</span>
+          <span class="tz-type-name">短视频口播</span>
+          <span class="tz-type-desc">抖音。60–90 秒的台词，按句子断行，念出来是顺的</span>
+        </button>
+      </div>
+
+      <!-- 第二步：素材 + 账号。两边都多选，交叉生成任务。 -->
+      <div class="tz-pane" data-pane="2" hidden>
+        <div class="tz-pick">
+          <div class="tz-pick-head">
+            <span>选素材</span>
+            <span class="tz-count" id="tzDraftCount">已选 0 篇</span>
+          </div>
+          <div class="tz-drafts" id="tzDrafts"></div>
+        </div>
+        <div class="tz-pick tz-pick-narrow">
+          <div class="tz-pick-head">
+            <span>发到</span>
+            <span class="tz-count" id="tzPlatCount">已选 0 个</span>
+          </div>
+          <div class="tz-plats" id="tzPlats"></div>
+        </div>
+      </div>
+
+      <!-- 第三步：确认。把「几篇 × 几个平台 = 几条任务」直接算给人看，
+           避免生成完才发现勾多了。 -->
+      <div class="tz-pane" data-pane="3" hidden>
+        <p class="tz-sum" id="tzSummary"></p>
+        <div class="tz-plan" id="tzPlan"></div>
+      </div>
+    </div>
+    <div class="tz-foot">
+      <span class="tz-hint" id="tzHint"></span>
+      <button class="btn btn-ghost btn-mini" id="tzBack" hidden>上一步</button>
+      <button class="btn btn-primary" id="tzNext" disabled>下一步</button>
+    </div>
+  </div>
+</div>
+
+<div class="pop" id="pickPop" hidden>
+  <div class="pop-card pop-card-wide">
+    <p class="pop-title">发哪一篇</p>
+    <p class="pop-topic">挑一篇最近写的稿，接着选平台和图片</p>
+    <div class="pick-list" id="pickList"></div>
+    <div class="pop-foot">
+      <button class="btn btn-ghost" id="pickCancel">取消</button>
+    </div>
+  </div>
+</div>
+
+<div class="pop" id="autoPop" hidden>
+  <div class="pop-card pop-card-wide">
+    <p class="pop-title">发到平台</p>
+    <p class="pop-topic" id="autoTopic"></p>
+
+    <div class="auto-plats" id="autoPlats"></div>
+
+    <div class="auto-wx" id="autoWx" hidden>
+      <p class="auto-wx-title">公众号接口凭证</p>
+      <input id="autoWxAppID" placeholder="AppID：后台 → 设置与开发 → 基本配置" autocomplete="off">
+      <input id="autoWxSecret" type="password" placeholder="AppSecret：不回显，留空表示不改" autocomplete="off">
+      <div class="auto-wx-actions">
+        <button class="btn btn-ghost btn-mini" id="autoWxTest">测试连接</button>
+        <button class="btn btn-primary btn-mini" id="autoWxSave">保存</button>
+      </div>
+      <p class="auto-wx-note" id="autoWxNote">
+        还要在后台把本机 IP 加进「IP 白名单」，否则接口会拒绝调用。密码类字段只存在本机 config.json。
+      </p>
+    </div>
+
+    <div class="auto-mode" id="autoMode" hidden>
+      <span class="auto-media-label">形态</span>
+      <button class="plat-pick on" data-mode="news">图文消息</button>
+      <button class="plat-pick" data-mode="newspic">图片消息（贴图）</button>
+    </div>
+
+    <div class="auto-media" id="autoMedia" hidden>
+      <div class="auto-media-row">
+        <span class="auto-media-label" id="autoMediaLabel">图片</span>
+        <button class="btn btn-ghost btn-mini" id="autoPick">从电脑选</button>
+        <button class="btn btn-ghost btn-mini" id="autoCover" hidden>生成封面</button>
+        <span class="auto-media-note" id="autoMediaNote">还没选</span>
+      </div>
+      <!-- 选了什么必须能看见。上一版只有一行「已选 1 张」，
+           用户根本不知道选的是哪张、封面长什么样，只能凭记忆。 -->
+      <div class="auto-thumbs" id="autoThumbs" hidden></div>
+    </div>
+
+    <div class="auto-warn" id="autoWarn" hidden></div>
+
+    <label class="auto-submit" id="autoSubmitWrap">
+      <input type="checkbox" id="autoSubmit">
+      <span>填完直接点发布。不勾就停在发布页，最后一下你自己按。</span>
+    </label>
+
+    <div class="auto-logs" id="autoLogs" hidden></div>
+
+    <div class="pop-foot">
+      <!-- 自己按了发布之后，一条台账还在等人去补。
+           让他关掉这个面板、回到发布台、再找那条稿、再填一遍，
+           中间任何一步都可能断掉——所以把「记一笔」就放在结果旁边。 -->
+      <button class="btn btn-primary btn-mini" id="autoMark" hidden>已发了，记一笔</button>
+      <button class="btn btn-ghost" id="autoClose">关闭</button>
+      <button class="btn btn-primary" id="autoRun">开始发布</button>
+    </div>
+  </div>
+</div>
+
+<div class="pop" id="matPop" hidden>
+  <div class="pop-card pop-wide">
+    <p class="pop-title" id="matPopTitle">添加素材</p>
+    <div class="mat-form">
+      <label class="mat-field">
+        <span>链接</span>
+        <input id="matUrl" placeholder="粘贴笔记链接，能自动认出平台" autocomplete="off" />
+      </label>
+      <div class="mat-row">
+        <label class="mat-field">
+          <span>平台</span>
+          <select id="matPlatform"></select>
+        </label>
+        <label class="mat-field">
+          <span>作者</span>
+          <input id="matAuthor" placeholder="可选" autocomplete="off" />
+        </label>
+      </div>
+      <label class="mat-field">
+        <span>标题</span>
+        <input id="matTitle" placeholder="这条笔记讲什么" autocomplete="off" />
+      </label>
+      <label class="mat-field">
+        <span>正文 <i class="mat-hint">粘进来才能提炼摘要和学习点</i></span>
+        <textarea id="matBody" rows="7" placeholder="把笔记正文粘到这里"></textarea>
+      </label>
+      <div class="mat-row">
+        <label class="mat-field">
+          <span>点赞</span>
+          <input id="matLikes" type="number" placeholder="可选" />
+        </label>
+        <label class="mat-field">
+          <span>收藏</span>
+          <input id="matCollects" type="number" placeholder="可选" />
+        </label>
+      </div>
+    </div>
+    <div class="pop-foot">
+      <button class="btn btn-ghost" id="matCancel">取消</button>
+      <button class="btn btn-primary" id="matOk">存下来并提炼</button>
+    </div>
+  </div>
+</div>
+
+<div class="pop" id="linkPop" hidden>
+  <div class="pop-card">
+    <p class="pop-title">这条素材给哪个选题当参考？</p>
+    <p class="pop-topic" id="linkMatTitle"></p>
+    <select class="pop-date" id="linkTopic"></select>
+    <div class="pop-foot">
+      <button class="btn btn-ghost" id="linkClear">取消关联</button>
+      <button class="btn btn-primary" id="linkOk">关联</button>
+    </div>
+  </div>
+</div>
+
+<div class="pop" id="planPop" hidden>
+  <div class="pop-card">
+    <p class="pop-title" id="planTitle">排到哪天发？</p>
+    <p class="pop-topic" id="planTopic"></p>
+    <div class="pop-quick" id="planQuick"></div>
+    <input type="date" class="pop-date" id="planDate" />
+    <div class="pop-foot">
+      <button class="btn btn-ghost" id="planClear">取消排期</button>
+      <button class="btn btn-primary" id="planOk">定了</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+
+
+<script type="module" src="./app.js"></script>
+</body>
+</html>

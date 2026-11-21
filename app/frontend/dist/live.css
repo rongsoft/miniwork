@@ -1,0 +1,229 @@
+/* 拆出来的平台窗口。
+ *
+ * 形态照微信的独立文章窗口：一条自己画的 46px 顶栏 + 满铺的网页，
+ * 没有系统标题栏。系统那条白色标题栏是「一个窗口」和「一个应用」的分界线，
+ * 留着它，这扇窗怎么调都像开发工具；去掉之后才像成品里的一页。
+ *
+ * 配色比主界面更素：这一屏的主角是网页本身，工具栏只是它的边框。
+ */
+
+:root {
+  --bg: #FBF7F0;
+  --bar: #FFFDFA;
+  --line: #ECE4D7;
+  --text: #2E2A25;
+  --muted: #6E655A;
+  --faint: #A3988A;
+  --primary: #2F6FED;
+  --primary-soft: #EFF4FE;
+  --hover: #F4EFE6;
+  --danger: #D93025;
+  --danger-soft: #FDECEA;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  height: 100%;
+  overflow: hidden;
+  color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+  font-size: 13px;
+  -webkit-font-smoothing: antialiased;
+  background: var(--bg);
+}
+
+/* 无边框窗口没有系统画的那圈边线，用一条内阴影补回来：
+   浅色窗口贴在深色桌面上时，没有这条线边界会糊进背景里。 */
+body.livepage { box-shadow: inset 0 0 0 1px rgba(74, 56, 38, .1); }
+
+.lw {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  min-height: 0;
+}
+
+/* ---------- 顶栏（同时是标题栏） ---------- */
+.lw-bar {
+  flex: none;
+  height: 46px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 8px;
+  background: var(--bar);
+  border-bottom: 1px solid var(--line);
+  white-space: nowrap;
+  overflow: hidden;
+  /* 整条可拖：这是无边框窗口唯一的拖动区。 */
+  --wails-draggable: drag;
+  -webkit-app-region: drag;
+}
+
+/* 平台头像：品牌色淡底 + 同一个色写字。
+   比放平台 logo 诚实——我们手上没有各家的授权图，画一个假 logo 更糟。 */
+.lw-fav {
+  flex: none;
+  width: 24px; height: 24px;
+  border-radius: 7px;
+  display: grid;
+  place-items: center;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: -.2px;
+  color: var(--primary);
+  background: var(--primary-soft);
+  margin-left: 2px;
+}
+
+.lw-title {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  padding-left: 2px;
+  line-height: 1.25;
+}
+
+.lw-name {
+  font-size: 12.5px;
+  font-weight: 600;
+  letter-spacing: .1px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* 第二行：登录态 · 域名。和微信文章窗口的「原创 · 作者 · 时间」同一位置，
+   用户不读也能感到这行是副信息。 */
+.lw-meta {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+  font-size: 11px;
+  color: var(--faint);
+}
+
+.lw-auth { flex: none; }
+.lw-auth.on { color: #1B8A46; }
+.lw-sep { flex: none; opacity: .7; }
+.lw-url {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ---------- 图标按钮 ---------- */
+.lw-ico {
+  flex: none;
+  width: 30px; height: 30px;
+  display: grid;
+  place-items: center;
+  color: var(--muted);
+  background: transparent;
+  border: 0;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background .14s ease, color .14s ease;
+  /* 按钮不吃拖动：否则按住它拖会拖窗口，点按也会被拖拽逻辑吞掉。 */
+  --wails-draggable: no-drag;
+  -webkit-app-region: no-drag;
+}
+
+.lw-ico svg { width: 16px; height: 16px; display: block; }
+
+.lw-ico:hover { background: var(--hover); color: var(--text); }
+.lw-ico:active { background: #ECE5D9; }
+
+/* 关掉是真正丢掉这一页，和「收回」不是同一件事，颜色要分开。 */
+.lw-quit:hover { background: var(--danger-soft); color: var(--danger); }
+.lw-quit:active { background: #F9DCD8; }
+
+/* ---------- 进度条 ---------- */
+.lw-status {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 14px;
+  font-size: 11.5px;
+  color: #2A5BC7;
+  background: var(--primary-soft);
+  border-bottom: 1px solid #E2EAFB;
+}
+.lw-status[hidden] { display: none; }
+.lw-status.is-ok { background: #EDF8F0; border-bottom-color: #D5EBDB; color: #1B7F3B; }
+.lw-status.is-warn { background: #FDF3E9; border-bottom-color: #F2E2CD; color: #8A5220; }
+
+.lw-status-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+  flex: none;
+  animation: lwPulse 1.4s ease-in-out infinite;
+}
+.lw-status.is-ok .lw-status-dot,
+.lw-status.is-warn .lw-status-dot { animation: none; }
+
+@keyframes lwPulse {
+  0%, 100% { opacity: .3; }
+  50%      { opacity: 1; }
+}
+
+.lw-status-text {
+  flex: 1;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+/* ---------- 画面 ---------- */
+.lw-stage {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  background: #fff;
+  cursor: default;
+}
+
+/* object-fit: fill 而不是 contain：视口尺寸就是照着这块区域的
+   CSS 尺寸设的，两边像素一一对应，点击坐标不用换算也就不会偏。 */
+.lw-stage img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: fill;
+  -webkit-user-drag: none;
+  user-select: none;
+}
+
+.lw-hint {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 32px;
+  font-size: 12.5px;
+  line-height: 1.9;
+  color: var(--faint);
+  text-align: center;
+  background: var(--bar);
+}
+.lw-hint[hidden] { display: none; }
+
+/* 键盘入口：既不能真隐掉（隐掉收不到键），也不能让用户看见。 */
+.lw-ime {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  border: 0;
+  padding: 0;
+}

@@ -1,0 +1,15 @@
+{
+	"fixed": {
+		"file_version": "0.1.4"
+	},
+	"info": {
+		"0409": {
+			"ProductVersion": "0.1.4",
+			"CompanyName": "Rongsoft",
+			"FileDescription": "每天长出来的选题清单",
+			"LegalCopyright": "© 2026 Rongsoft",
+			"ProductName": "Miniwork",
+			"Comments": "选题 · 成稿 · 发布 · 复盘"
+		}
+	}
+}

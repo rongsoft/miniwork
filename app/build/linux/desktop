@@ -1,0 +1,13 @@
+[Desktop Entry]
+Version=1.0
+Name=Miniwork
+Comment=每天长出来的选题清单
+# The Exec line includes %u to pass the URL to the application
+Exec=/usr/local/bin/Miniwork %u
+Terminal=false
+Type=Application
+Icon=Miniwork
+Categories=Utility;
+StartupWMClass=Miniwork
+
+ 
