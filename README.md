@@ -6,6 +6,16 @@
 - **数据服务端**：Go 标准库实现，零第三方依赖，单二进制部署
 - **开源协议**：MIT
 
+## 运行截图
+
+| 今日灵感 | 爆款拆解 |
+|:---:|:---:|
+| ![今日灵感](screenshots/01-inspiration.png) | ![爆款拆解](screenshots/02-teardown.png) |
+
+| 发布台 | 数据分析 |
+|:---:|:---:|
+| ![发布台](screenshots/03-publish.png) | ![数据分析](screenshots/04-analytics.png) |
+
 ---
 
 ## 功能特性
@@ -33,7 +43,8 @@ miniwork/
 │   ├── config.json         # 公开模板（token 为占位符）
 │   ├── miniwork-server.exe # 预编译 Windows 服务端（10MB）
 │   └── README.md           # 服务端部署说明
-├── 产品规格.md / 数据接口约定.md / 开发思路.md / Windows报毒分析与处理.md
+├── 数据接口约定.md / Windows报毒分析与处理.md
+├── screenshots/            # 运行截图
 └── LICENSE                 # MIT
 ```
 
